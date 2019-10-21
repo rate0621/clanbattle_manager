@@ -6,15 +6,18 @@ from django.views.generic import TemplateView, UpdateView
 from clanbattle.models import *
 from clanbattle.forms import BossForm
 
-class BossListView(TemplateView):
+class CbListView(TemplateView):
     template_name = "clanbattle/boss_list.html"
     #model = models.Boss
 
     def get(self, request, *args, **kwargs):
-        context = super(BossListView, self).get_context_data(**kwargs)
+        context = super(CbListView, self).get_context_data(**kwargs)
 
         boss = Boss.objects.all()  # データベースからオブジェクトを取得して
         context['boss'] = boss  # 入れ物に入れる
+
+        a_log = AttackLog.objects.all()  # データベースからオブジェクトを取得して
+        context['a_log'] = a_log  # 入れ物に入れる
 
         return render(self.request, self.template_name, context)
 

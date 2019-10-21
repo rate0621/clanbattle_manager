@@ -8,8 +8,8 @@ class Boss(models.Model):
     class Meta:
         db_table = 'boss'
 
-    event_month   = models.DateField(verbose_name='開催月', max_length=255)
-    boss_number   = models.IntegerField(verbose_name='番号')
+    #event_month   = models.DateField(verbose_name='開催月', max_length=255)
+    boss_id   = models.IntegerField(primary_key=True, verbose_name='番号', null=False, default='')
     boss_name     = models.CharField(verbose_name='ボス名', max_length=255)
     max_hit_point = models.IntegerField(verbose_name='HP')
     target        = models.CharField(verbose_name='ダメージ目安', max_length=255)
@@ -25,13 +25,13 @@ class ClanMembers(models.Model):
     class Meta:
         db_table = 'clan_members'
 
-    user_id   = models.CharField(verbose_name='ユーザID', max_length=255)
-    user_name = models.CharField(verbose_name='ユーザ名', max_length=255)
-    is_member = models.BooleanField(verbose_name='正式メンバー', default=False)
+    member_id   = models.CharField(primary_key=True, verbose_name='メンバーID', max_length=255, null=False, default='')
+    member_name = models.CharField(verbose_name='メンバー名', max_length=255)
+    is_member   = models.BooleanField(verbose_name='正式メンバー', default=False)
 
 
     def __str__(self):
-        ret = self.user_name
+        ret = self.member_name
         return ret
 
 class BossReserve(models.Model):
@@ -39,14 +39,14 @@ class BossReserve(models.Model):
         db_table = 'boss_reserve'
 
     reserved_at = models.DateTimeField(verbose_name='予約日')
-    user_id     = models.CharField(verbose_name='ユーザID', max_length=255)
-    boss_number = models.IntegerField(verbose_name='番号')
+    member      = models.ForeignKey(ClanMembers, verbose_name='メンバー', on_delete=models.CASCADE)
+    boss        = models.ForeignKey(Boss,        verbose_name='ボス',     on_delete=models.CASCADE)
     is_attack   = models.BooleanField(verbose_name='凸済み',     default=False)
     is_cancel   = models.BooleanField(verbose_name='キャンセル', default=False)
 
 
     def __str__(self):
-        ret = self.user_id
+        ret = self.member
         return ret
 
 
@@ -55,25 +55,25 @@ class AttackLog(models.Model):
         db_table = 'attack_log'
 
     attack_time   = models.DateTimeField(verbose_name='凸時間')
-    user_id       = models.CharField(verbose_name='ユーザID', max_length=255)
-    boss_number   = models.IntegerField(verbose_name='番号')
+    member        = models.ForeignKey(ClanMembers, verbose_name='メンバー', on_delete=models.CASCADE)
+    boss          = models.ForeignKey(Boss,        verbose_name='ボス',     on_delete=models.CASCADE)
     damage        = models.IntegerField(verbose_name='ダメージ')
     score         = models.IntegerField(verbose_name='スコア')
     is_carry_over = models.IntegerField(verbose_name='持ち越し')
 
     def __str__(self):
-        ret = self.user_id
+        ret = self.member
         return ret
 
 class CurrentBoss(models.Model):
     class Meta:
         db_table = 'current_boss'
 
-    boss_number = models.IntegerField(verbose_name='番号')
-    hit_point   = models.IntegerField(verbose_name='残りHP')
+    boss      = models.ForeignKey(Boss, verbose_name='ボス', on_delete=models.CASCADE)
+    hit_point = models.IntegerField(verbose_name='残りHP')
 
     def __str__(self):
-        ret = self.boss_number
+        ret = self.boss
         return ret
 
 
@@ -82,11 +82,11 @@ class CarryOver(models.Model):
         db_table = 'carry_over'
 
     carried_at  = models.DateTimeField(verbose_name='処理日')
-    user_id     = models.CharField(verbose_name='ユーザID', max_length=255)
-    boss_number = models.IntegerField(verbose_name='番号')
+    member      = models.ForeignKey(ClanMembers, verbose_name='メンバー', on_delete=models.CASCADE)
+    boss        = models.ForeignKey(Boss,        verbose_name='ボス',     on_delete=models.CASCADE)
     time        = models.IntegerField(verbose_name='持ち越し時間')
     is_attack   = models.BooleanField(verbose_name='凸済み', default=False)
 
     def __str__(self):
-        ret = self.user_id
+        ret = self.member
         return ret
