@@ -41,7 +41,7 @@
                         <td>{{b.boss_id}}</td>
                         <td>{{b.boss_name}}</td>
                         <td>{{b.max_hit_point}}</td>
-                        <td><a href="/clanbattle/popup/update_target/{{b.id}}">{{b.target}}</td>
+                        <td><a href="/clanbattle/popup/update_target/{{b.boss_id}}">{{b.target}}</td>
                     </tr>
                 {% endfor %}
             </tbody>
@@ -58,7 +58,7 @@
                     <th>ユーザ名</th>
                     <th>ボス名</th>
                     <th>ダメージ</th>
-                    <th>持ち越したか</th>
+                    <th>持ち越し？</th>
                 </tr>
             </thead>
             <tbody>
@@ -67,8 +67,8 @@
                         <td>{{l.attack_time|date:"Y/m/d f"}}</td>
                         <td>{{l.member.member_name}}</td>
                         <td>{{l.boss.boss_name}}</td>
-                        <td>{{l.damage}}</td>
-                        <td>{{l.is_carry_over}}</td>
+                        <td><a href="/clanbattle/update_damage/{{l.id}}">{{l.damage}}</td>
+                        <td>{{l.is_carry_over | yesno:'持ち越し, -'}}</td>
                     </tr>
                 {% endfor %}
             </tbody>
