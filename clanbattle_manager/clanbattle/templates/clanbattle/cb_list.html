@@ -1,5 +1,4 @@
 {% extends 'clanbattle/base.html' %}
-
 {% block cb_list%}
 <div id="aaa">
 <ul class="nav nav-tabs">
@@ -13,6 +12,18 @@
 
 <div class="tab-content" id="myTabContent">
     <div class="tab-pane show active" id="boss" role="tabpanel" aria-labelledby="boss-tab">
+
+<div class="form-group">
+  <label for="select1a">Select:</label>
+  <form method="get">
+  <select name="month" id="select1a" class="form-control" onchange="submit(this.form)">
+    {% for m in past_month %}
+        <option value={{ m.0 }}-{{ m.1 }}-01 {{ m.2 | yesno:'selected,' }} }}>{{ m.0 }}/{{ m.1 }}</option>
+    {% endfor %}
+  </select>
+  </form>
+</div>
+
         <ol class="breadcrumb my-4">
             <li class="breadcrumb-item">Boss</li>
         </ol>
@@ -38,6 +49,10 @@
         </table>
     </div>
     <div class="tab-pane" id="attack-log" role="tabpanel" aria-labelledby="attack-log-tab">
+
+
+
+
         <ol class="breadcrumb my-4">
             <li class="breadcrumb-item">Attack Log</li>
         </ol>

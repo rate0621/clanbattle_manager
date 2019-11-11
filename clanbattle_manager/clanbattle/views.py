@@ -6,9 +6,31 @@ from django.views.generic import TemplateView, UpdateView
 from clanbattle.models import *
 from clanbattle.forms import BossForm, AttackLogForm
 
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
+
+def get_past_month(target, current, selected_month):
+    arr = []
+
+    while 1:
+        choise = ''
+        if target.strftime("%Y-%m-%d") == selected_month:
+            choise = True
+        else:
+            choise = False
+
+        arr.append((target.year, target.month, choise))
+        target = target + relativedelta(months=1)
+
+        if target > current:
+            break
+
+
+    return arr
+
+
 class CbListView(TemplateView):
     template_name = "clanbattle/cb_list.html"
-    #model = models.Boss
 
     def get(self, request, *args, **kwargs):
         context = super(CbListView, self).get_context_data(**kwargs)
@@ -16,8 +38,24 @@ class CbListView(TemplateView):
         boss = Boss.objects.all()  # データベースからオブジェクトを取得して
         context['boss'] = boss  # 入れ物に入れる
 
-        a_log = AttackLog.objects.order_by('attack_time').reverse()[:20]  # データベースからオブジェクトを取得して
+        selected_month = request.GET.get("month")
+        context['selected_month'] = selected_month
+
+        if selected_month is None:
+            target = datetime.today()
+            f      = datetime.strftime(target, '%Y-%m-01')
+            t      = datetime.strftime(target, '%Y-%m-30')
+        else:
+            f      = datetime.strftime(datetime.strptime(selected_month, '%Y-%m-%d'), '%Y-%m-01')
+            t      = datetime.strftime(datetime.strptime(selected_month, '%Y-%m-%d'), '%Y-%m-31')
+            
+
+
+        a_log = AttackLog.objects.filter(attack_time__range=(f, t)).order_by('attack_time').reverse()[:20]  # データベースからオブジェクトを取得して
         context['a_log'] = a_log  # 入れ物に入れる
+
+        # クラバトのデータを取り始めたのが2019/09から
+        context['past_month'] = get_past_month(datetime.strptime('2019-09-01', '%Y-%m-%d'), datetime.strptime(datetime.strftime(datetime.today(), "%Y-%m-01"), '%Y-%m-%d'), selected_month)
 
         return render(self.request, self.template_name, context)
 
