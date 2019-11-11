@@ -7,7 +7,7 @@ from clanbattle.models import *
 from clanbattle.forms import BossForm, AttackLogForm
 
 class CbListView(TemplateView):
-    template_name = "clanbattle/boss_list.html"
+    template_name = "clanbattle/cb_list.html"
     #model = models.Boss
 
     def get(self, request, *args, **kwargs):
@@ -16,7 +16,7 @@ class CbListView(TemplateView):
         boss = Boss.objects.all()  # データベースからオブジェクトを取得して
         context['boss'] = boss  # 入れ物に入れる
 
-        a_log = AttackLog.objects.all()  # データベースからオブジェクトを取得して
+        a_log = AttackLog.objects.order_by('attack_time').reverse()[:20]  # データベースからオブジェクトを取得して
         context['a_log'] = a_log  # 入れ物に入れる
 
         return render(self.request, self.template_name, context)

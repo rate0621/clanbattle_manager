@@ -57,9 +57,11 @@ class AttackLog(models.Model):
     attack_time   = models.DateTimeField(verbose_name='凸時間')
     member        = models.ForeignKey(ClanMembers, verbose_name='メンバー', on_delete=models.CASCADE)
     boss          = models.ForeignKey(Boss,        verbose_name='ボス',     on_delete=models.CASCADE)
+    loop_count    = models.IntegerField(verbose_name='週', default=1)
     damage        = models.IntegerField(verbose_name='ダメージ')
     score         = models.IntegerField(verbose_name='スコア')
     is_carry_over = models.IntegerField(verbose_name='持ち越し')
+    attack_weight = models.FloatField(verbose_name='重み', default=0)
 
     def __str__(self):
         ret = self.member
@@ -69,8 +71,9 @@ class CurrentBoss(models.Model):
     class Meta:
         db_table = 'current_boss'
 
-    boss      = models.ForeignKey(Boss, verbose_name='ボス', on_delete=models.CASCADE)
-    hit_point = models.IntegerField(verbose_name='残りHP')
+    boss       = models.ForeignKey(Boss, verbose_name='ボス', on_delete=models.CASCADE)
+    hit_point  = models.IntegerField(verbose_name='残りHP')
+    loop_count = models.IntegerField(verbose_name='週', default=1)
 
     def __str__(self):
         ret = self.boss
