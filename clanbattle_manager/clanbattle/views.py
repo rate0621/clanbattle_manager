@@ -44,10 +44,10 @@ class CbListView(TemplateView):
         if selected_month is None:
             target = datetime.today()
             f      = datetime.strftime(target, '%Y-%m-01')
-            t      = datetime.strftime(target, '%Y-%m-30')
+            t      = datetime.strftime(target + relativedelta(months=1), '%Y-%m-01')
         else:
             f      = datetime.strftime(datetime.strptime(selected_month, '%Y-%m-%d'), '%Y-%m-01')
-            t      = datetime.strftime(datetime.strptime(selected_month, '%Y-%m-%d'), '%Y-%m-31')
+            t      = datetime.strftime(datetime.strptime(selected_month, '%Y-%m-%d') + relativedelta(months=1), '%Y-%m-01')
             
 
 
